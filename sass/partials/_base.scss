@@ -1,0 +1,31 @@
+@import "compass/typography";
+
+$blue: rgba(0, 0, 50, 0.06);
+
+body {
+	$grid-background-baseline-color: rgba(0, 0, 50, 0.06);
+	@include baseline-grid-background;
+}
+
+.container {
+	@include container;
+}
+
+.row {
+	@include row(12);
+}
+
+.span1 {
+	@include spans(1,12);
+}
+
+.block {
+	background-color: rgba(0, 0, 50, 0.06);
+	height: 1200px;
+	width: 100%;
+	border-left: 1px solid $blue;
+}
+
+.block:last-child {
+	border-right: 1px solid $blue;
+}

@@ -1,0 +1,108 @@
+// Infinitely Nestable Fluid Grid
+// --------------------------------------------------
+
+// Instructions: Assign values to each of the four variables.
+
+// Options
+// --------------------------------------------------
+
+$totalColumns:			12;
+$gutterWidth:			1em;
+$columnWidth:			4em;
+$containerPadding:		1em;
+
+// Grids must be created and nested in the following manner:
+
+// Mixins
+// --------------------------------------------------
+
+// 1.
+// Assign to the container div. Type can be static or fluid.
+// @include container($type)
+// --------------------------------------------------
+
+// 2.
+// Assign row mixin to start a grid. $totalColumns should be equal
+// to the number of spans the grid is nested in.
+// @include row($totalColumns)
+// --------------------------------------------------
+
+// 3. 
+// Assign spans mixin to column spans. Must be have row parent and match $totalColumns 
+// @include spans($numSpans, $totalColumns)
+
+// Markup Structure with Example Mixin Parameters
+
+// container
+// 	row(12)
+// 		span(4,12)
+// 		span(4,12)
+// 			row(4)
+// 				span(2,4)
+// 				span(2,4)
+// 		span(4,12)
+// 		span(4,12)
+
+// END 
+// --------------------------------------------------
+
+
+
+
+@mixin clear {
+	&:before,
+	&:after {
+		display: table;
+		content: "";
+		line-height: 0;
+	}
+	&:after {
+		clear: both;
+	}
+}
+
+// Grid Math
+// --------------------------------------------------
+
+// The extra gutter needs to be there to calculate fluid column widths.
+$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
+
+// The end result width of full row of columns.
+$rowWidth: ($totalColumns * $columnWidth) + ($gutterWidth * ($totalColumns - 1)); 
+
+@mixin container($type:fluid) {
+	@if ($type == fluid) {
+		max-width: $rowWidth + (2 * $containerPadding);
+	}
+	@else if ($type == static) {
+		width: $rowWidth + (2 * $containerPadding);
+	}
+	padding: {
+		left: $containerPadding;
+		right: $containerPadding;
+	}
+	margin: 0 auto;
+}
+
+@mixin row ($totalColumns) {
+	@include clear;
+	$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
+	$gutterWidthPercent: percentage($gutterWidth / $rowContext);
+
+	margin-left: $gutterWidthPercent * -1;
+}
+
+@mixin spans($numberSpans, $totalColumns) {
+
+	$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
+
+	$spanWidthUnit: ($numberSpans * $columnWidth) + (($numberSpans - 1) * $gutterWidth);
+	$spanWidthPercent: percentage($spanWidthUnit / $rowContext );
+	
+	$spanGutterWidth: $gutterWidth;
+	$spanGutterPercent: percentage( $spanGutterWidth / $rowContext );
+
+	width: $spanWidthPercent;
+	margin-left: $spanGutterPercent;
+	float: left;
+}
