@@ -93,13 +93,13 @@ body {
 .row {
   margin-left: -1.66667%;
 }
-/* line 54, ../sass/partials/_grid.scss */
+/* line 25, ../sass/partials/_grid.scss */
 .row:before, .row:after {
   display: table;
   content: "";
   line-height: 0;
 }
-/* line 59, ../sass/partials/_grid.scss */
+/* line 26, ../sass/partials/_grid.scss */
 .row:after {
   clear: both;
 }

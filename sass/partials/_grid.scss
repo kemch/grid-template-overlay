@@ -1,108 +1,65 @@
 // Infinitely Nestable Fluid Grid
 // --------------------------------------------------
 
-// Instructions: Assign values to each of the four variables.
-
 // Options
 // --------------------------------------------------
 
-$totalColumns:			12;
-$gutterWidth:			1em;
-$columnWidth:			4em;
-$containerPadding:		1em;
+$grid-columns: 				12;
+$grid-gutter-width:			1em;
+$grid-column-width: 		8em;
+$grid-container-padding: 	1em;
 
-// Grids must be created and nested in the following manner:
-
-// Mixins
-// --------------------------------------------------
-
-// 1.
-// Assign to the container div. Type can be static or fluid.
-// @include container($type)
-// --------------------------------------------------
-
-// 2.
-// Assign row mixin to start a grid. $totalColumns should be equal
-// to the number of spans the grid is nested in.
-// @include row($totalColumns)
-// --------------------------------------------------
-
-// 3. 
-// Assign spans mixin to column spans. Must be have row parent and match $totalColumns 
-// @include spans($numSpans, $totalColumns)
-
-// Markup Structure with Example Mixin Parameters
-
-// container
-// 	row(12)
-// 		span(4,12)
-// 		span(4,12)
-// 			row(4)
-// 				span(2,4)
-// 				span(2,4)
-// 		span(4,12)
-// 		span(4,12)
-
-// END 
-// --------------------------------------------------
-
-
-
-
-@mixin clear {
-	&:before,
-	&:after {
-		display: table;
-		content: "";
-		line-height: 0;
-	}
-	&:after {
-		clear: both;
-	}
-}
 
 // Grid Math
 // --------------------------------------------------
 
 // The extra gutter needs to be there to calculate fluid column widths.
-$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
+$row-context: ($grid-columns * $grid-column-width) + ($grid-gutter-width * $grid-columns);
 
 // The end result width of full row of columns.
-$rowWidth: ($totalColumns * $columnWidth) + ($gutterWidth * ($totalColumns - 1)); 
+$row-width: ($grid-columns * $grid-column-width) + ($grid-gutter-width * ($grid-columns - 1)); 
+
+// Mixins
+
+@mixin row-clear { &:before,
+			   &:after { display: table; content: ""; line-height: 0; }
+			   &:after { clear: both; }
+			 }
 
 @mixin container($type:fluid) {
 	@if ($type == fluid) {
-		max-width: $rowWidth + (2 * $containerPadding);
+		max-width: $row-width + (2 * $grid-container-padding);
 	}
 	@else if ($type == static) {
-		width: $rowWidth + (2 * $containerPadding);
+		width: $row-width + (2 * $grid-container-padding);
 	}
 	padding: {
-		left: $containerPadding;
-		right: $containerPadding;
+		left: $grid-container-padding;
+		right: $grid-container-padding;
 	}
 	margin: 0 auto;
 }
 
-@mixin row ($totalColumns) {
-	@include clear;
-	$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
-	$gutterWidthPercent: percentage($gutterWidth / $rowContext);
+@mixin row ($grid-columns) {
 
-	margin-left: $gutterWidthPercent * -1;
+	@include row-clear;
+	$row-context: ($grid-columns * $grid-column-width) + ($grid-gutter-width * $grid-columns);
+	$grid-gutter-width-percent: percentage($grid-gutter-width / $row-context);
+
+	margin-left: $grid-gutter-width-percent * -1;
 }
 
-@mixin spans($numberSpans, $totalColumns) {
+@mixin spans($column-spans, $grid-columns) {
 
-	$rowContext: ($totalColumns * $columnWidth) + ($gutterWidth * $totalColumns);
+	$row-context: ($grid-columns * $grid-column-width) + ($grid-gutter-width * $grid-columns);
 
-	$spanWidthUnit: ($numberSpans * $columnWidth) + (($numberSpans - 1) * $gutterWidth);
-	$spanWidthPercent: percentage($spanWidthUnit / $rowContext );
+	$span-width-unit: ($column-spans * $grid-column-width) + (($column-spans - 1) * $grid-gutter-width);
+	$span-width-percent: percentage($span-width-unit / $row-context );
 	
-	$spanGutterWidth: $gutterWidth;
-	$spanGutterPercent: percentage( $spanGutterWidth / $rowContext );
+	$spangrid-gutter-width: $grid-gutter-width;
+	$span-gutter-percent: percentage( $spangrid-gutter-width / $row-context );
 
-	width: $spanWidthPercent;
-	margin-left: $spanGutterPercent;
+	width: $span-width-percent;
+	margin-left: $span-gutter-percent;
 	float: left;
 }
